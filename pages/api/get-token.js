@@ -1,6 +1,6 @@
 import { tokenGenerator } from 'services/token-service'
 
-export default async function get(req, res) {
+export default async function getToken(req, res) {
     switch (req.method) {
         case 'GET':
             const identity = req.query.identity
