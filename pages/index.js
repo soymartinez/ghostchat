@@ -1,7 +1,10 @@
 import Form from 'components/form'
 import Layout from 'components/layout'
+import { createOrJoinConversation } from 'services/chat'
 
-export default function Home() {
+export default function Home({ data }) {
+
+
   return (
     <Layout page={`Secret chat`}>
       <div className='
@@ -15,3 +18,13 @@ export default function Home() {
     </Layout>
   )
 }
+
+export async function getServerSideProps() {
+  const req = await fetch('http://localhost:3000/api/get-access-token')
+  const data = await req.json()
+  createOrJoinConversation('test', data.token)
+
+  return {
+    props: { data },
+  }
+} 
