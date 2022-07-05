@@ -20,7 +20,7 @@ export default function Home({ data }) {
 }
 
 export async function getServerSideProps() {
-  const req = await fetch('http://localhost:3000/api/get-access-token')
+  const req = await fetch('http://localhost:3000/api/get-token')
   const data = await req.json()
   createOrJoinConversation('test', data.token)
 
