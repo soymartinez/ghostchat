@@ -1,11 +1,10 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 export default function Form() {
     const [name, setName] = useState('')
-    console.log(name)
     function handleAnonymousSubmit(e) {
         e.preventDefault()
-        console.log('handleAnonymousSubmit')
+        console.log(name)
     }
 
     return (
