@@ -10,8 +10,8 @@ export default function Form() {
     return (
         <form onSubmit={handleAnonymousSubmit}>
             <input type='text' placeholder='Anonimous name'
-                className='border-2 rounded-full p-2 outline-none  
-                            font-bold text-center focus:text-black
+                className='border-2 rounded-full p-2 outline-none transition-all
+                            font-semibold text-center focus:text-black
                             focus:outline-none focus:border-[#888888]'
                 onChange={(e) => setName(e.target.value)} />
         </form>
