@@ -36,7 +36,7 @@ export default function Home({ data }) {
                 <span className='text-md text-white font-semibold'>{name}</span>
                 <button className='text-md text-black font-bold 
                                   bg-white hover:bg-black hover:text-white
-                                  px-3 py-1 rounded-full' onClick={() => signOut()}>
+                                  px-3 py-1 rounded-full transition-all' onClick={() => signOut()}>
                   Sign Out
                 </button>
               </div>
@@ -49,7 +49,22 @@ export default function Home({ data }) {
   )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  )
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      }
+    }
+  }
+
   const req = await fetch('http://localhost:3000/api/get-token')
   const data = await req.json()
   createOrJoinConversation('test', data.token)
