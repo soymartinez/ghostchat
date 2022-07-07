@@ -7,6 +7,7 @@ import { createOrJoinConversation } from 'services/chat'
 import { authOptions } from './api/auth/[...nextAuth]'
 import { useEffect, useState } from 'react'
 import Signout from 'components/signout'
+import Image from 'next/image'
 
 export default function Home({ data }) {
   const [session, setSession] = useState(null)
@@ -30,8 +31,11 @@ export default function Home({ data }) {
           {
             session && (
               <div className='flex justify-between items-center 
-                              w-full transition-all mb-4' key={session.email}>
-                <span className='text-md text-white font-semibold'>{session.name}</span>
+                              w-full transition-all mb-4 gap-8' key={session.email}>
+                <div className='flex items-center gap-2'>
+                  <Image src={session.image} className='rounded-full' width={32} height={32} />
+                  <span className='text-md text-white font-semibold'>{session.name}</span>
+                </div>
                 <button className='text-md text-black font-bold flex justify-center items-center gap-1
                                   bg-white hover:bg-black hover:text-white
                                   px-3 py-1 rounded-full transition-all' onClick={() => signOut()}>
