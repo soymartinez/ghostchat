@@ -3,7 +3,6 @@ import Layout from 'components/layout'
 import Github from 'components/github'
 
 export default function Signin({ providers }) {
-    console.log(providers)
     return (
         <Layout page={'Login'}>
             <div className='flex justify-center items-center w-full h-5/6'>
@@ -31,8 +30,8 @@ export default function Signin({ providers }) {
     )
 }
 
-export async function getServerSideProps(context) {
-    const providers = await getProviders(context)
+export async function getServerSideProps() {
+    const providers = await getProviders()
 
     return {
         props: {
