@@ -6,6 +6,7 @@ import Layout from 'components/layout'
 import { createOrJoinConversation } from 'services/chat'
 import { authOptions } from './api/auth/[...nextAuth]'
 import { useEffect, useState } from 'react'
+import Signout from 'components/signout'
 
 export default function Home({ data }) {
   const [session, setSession] = useState(null)
@@ -17,7 +18,7 @@ export default function Home({ data }) {
     }
     session()
   }, [])
-  
+
   return (
     <Layout page={`Secret chat`}>
       <div className='
@@ -31,10 +32,10 @@ export default function Home({ data }) {
               <div className='flex justify-between items-center 
                               w-full transition-all mb-4' key={session.email}>
                 <span className='text-md text-white font-semibold'>{session.name}</span>
-                <button className='text-md text-black font-bold 
+                <button className='text-md text-black font-bold flex justify-center items-center gap-1
                                   bg-white hover:bg-black hover:text-white
                                   px-3 py-1 rounded-full transition-all' onClick={() => signOut()}>
-                  Sign Out
+                  <Signout /> Sign Out
                 </button>
               </div>
             )
