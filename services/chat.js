@@ -3,8 +3,9 @@ import { Client } from '@twilio/conversations'
 export function createOrJoinConversation(room, token) {
     const client = new Client(token)
 
-    return client.on('stateChanged', async (state) => {
+    client.on('stateChanged', async (state) => {
         if (state === 'initialized') {
+            let conversation
             try {
                 conversation = await client.createConversation({
                     uniqueName: room,
