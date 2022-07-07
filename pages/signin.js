@@ -14,7 +14,7 @@ export default function Signin({ providers }) {
                     </div>
                     <div className='w-full max-w-xs self-center'>
                         <div className='pb-4 border-b border-white'>
-                            <button onClick={() => signIn(providers.github.id)}
+                            <button onClick={() => signIn(providers.github.id, {callbackUrl: `/`})}
                                 className='flex justify-center items-center 
                                           bg-white hover:bg-zinc-100 text-black text-center font-bold
                                             py-3 min-w-full max-w-full mb-3
