@@ -1,4 +1,5 @@
 import { SessionProvider } from 'next-auth/react'
+import { Context } from 'context/context'
 import '../styles/globals.css'
 
 function MyApp({
@@ -6,9 +7,11 @@ function MyApp({
   pageProps: { session, ...pageProps },
 }) {
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <Context>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </Context>
   )
 }
 
