@@ -4,7 +4,7 @@ import { authOptions } from './api/auth/[...nextAuth]'
 
 import Layout from 'components/layout'
 import Header from 'components/header'
-import Form from 'components/form'
+import Form from 'components/form-select-room'
 
 export default function Home({ user }) {
   return (
