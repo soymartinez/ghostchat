@@ -13,7 +13,7 @@ export default function Signin({ providers }) {
                         </h1>
                     </div>
                     <div className='w-full max-w-xs self-center'>
-                        <div className='pb-4 border-b border-white'>
+                        <div className='pb-4'>
                             <button onClick={() => signIn(providers.github.id, {callbackUrl: `/`})}
                                 className='flex justify-center items-center 
                                           bg-white hover:bg-zinc-100 text-black text-center font-bold
