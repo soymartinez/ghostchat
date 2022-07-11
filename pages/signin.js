@@ -1,8 +1,11 @@
 import { getProviders, signIn } from 'next-auth/react'
+import { useState } from 'react'
 import Layout from 'components/layout'
 import Github from 'components/github'
 
 export default function Signin({ providers }) {
+    const [hover, setHover] = useState(false)
+
     return (
         <Layout page={'Login'}>
             <div className='flex justify-center items-center w-full h-5/6'>
@@ -14,12 +17,14 @@ export default function Signin({ providers }) {
                     </div>
                     <div className='w-full max-w-xs self-center'>
                         <div className='pb-4'>
-                            <button onClick={() => signIn(providers.github.id, {callbackUrl: `/`})}
-                                className='flex justify-center items-center 
-                                          bg-white hover:bg-zinc-100 text-black text-center font-bold
-                                            py-3 min-w-full max-w-full mb-3
-                                            border border-transparent rounded-md transition-all'>
-                                <Github />
+                            <button onClick={() => signIn(providers.github.id, { callbackUrl: `/` })}
+                                onMouseEnter={() => setHover(true)}
+                                onMouseLeave={() => setHover(false)}
+                                className='flex justify-center items-center
+                                          bg-white hover:bg-transparent hover:text-white text-black 
+                                            py-3 min-w-full max-w-full mb-3 border-2 hover:border-white
+                                            border-transparent rounded-full transition-all font-bold'>
+                                <Github active={hover} />
                                 <span>Continue whit {providers.github.name}</span>
                             </button>
                         </div>
