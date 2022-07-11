@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { getAccessToken } from 'services/user'
 import { useRouter } from 'next/router'
+
+import { useConversation } from 'context/context'
+import { getAccessToken } from 'services/user'
 import { createOrJoinConversation } from 'services/chat'
 
 export default function Form() {
     const [name, setName] = useState('')
     const router = useRouter()
+    const { conversationContext, setConversationContext } = useConversation()
 
     async function handleCreateOrJoinRoomSubmit(e) {
         e.preventDefault()
@@ -15,6 +18,8 @@ export default function Form() {
         const conversation = await createOrJoinConversation({ room: name, token })
 
         if (conversation) {
+            setConversationContext(conversation)
+            console.log('conversationContext: ', conversationContext)
             router.push(`/${name}`)
         }
     }
