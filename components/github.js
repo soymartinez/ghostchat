@@ -1,8 +1,9 @@
-export default function Github() {
+export default function Github({ active }) {
     return (
         <svg className="mr-2" height={20} width={20} xmlns="http://www.w3.org/2000/svg">
             <path 
-            fill="#000"
+            className='transition-all'
+            fill={active ? 'white' : 'black'}
             d="M13.18 11.309c-.718 0-1.3.807-1.3 1.799 0 .994.582 1.801 1.3 1.801s1.3-.807 
             1.3-1.801c-.001-.992-.582-1.799-1.3-1.799zm4.526-4.683c.149-.365.155-2.439-.635-4.426 0 
             0-1.811.199-4.551 2.08-.575-.16-1.548-.238-2.519-.238-.973 0-1.945.078-2.52.238C4.74 2.399 2.929 
