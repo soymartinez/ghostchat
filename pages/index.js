@@ -2,17 +2,31 @@ import { unstable_getServerSession } from 'next-auth/next'
 import { getToken } from 'next-auth/jwt'
 import { authOptions } from './api/auth/[...nextAuth]'
 
+import { useUser } from 'context/context'
 import Layout from 'components/layout'
 import Header from 'components/header'
 import Form from 'components/form-select-room'
+import { useEffect } from 'react'
 
 export default function Home({ user }) {
+  const { userContext, setUserContext } = useUser()
+
+  useEffect(() => {
+    setUserContext(user)
+  }, []);
+
   return (
     <Layout page={`Secret chat`}>
       <div className='flex justify-center items-center h-5/6'>
         <div className='flex flex-col justify-center items-center w-full'>
           {user && (<Header user={user} />)}
           <Form />
+          <div>
+            <h1 className='text-white'>Data from user context</h1>
+            <p>{userContext.name}</p>
+            <p>{userContext.email}</p>
+            <p>{userContext.image}</p>
+          </div>
         </div>
       </div>
     </Layout>
