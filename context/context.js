@@ -7,8 +7,8 @@ export const useConversation = () => useContext(Conversation)
 export const useUser = () => useContext(User)
 
 export const Context = ({ children }) => {
-    const [conversation, setConversation] = useState([])
-    const [user, setUser] = useState([])
+    const [conversationContext, setConversation] = useState([])
+    const [userContext, setUser] = useState([])
 
     const setConversationContext = (conversation) => {
         setConversation(conversation)
@@ -23,8 +23,8 @@ export const Context = ({ children }) => {
     }
 
     return (
-        <Conversation.Provider value={{ conversation, setConversationContext }}>
-            <User.Provider value={{ user, setUserContext }}>
+        <Conversation.Provider value={{ conversationContext, setConversationContext }}>
+            <User.Provider value={{ userContext, setUserContext }}>
                 {children}
             </User.Provider>
         </Conversation.Provider>
