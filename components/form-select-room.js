@@ -6,9 +6,10 @@ import { getAccessToken } from 'services/user'
 import { createOrJoinConversation } from 'services/chat'
 
 export default function Form() {
+    const { push } = useRouter()
     const [name, setName] = useState('')
-    const router = useRouter()
-    const { conversationContext, setConversationContext } = useConversation()
+    const [error, setError] = useState(false)
+    const { setConversationContext } = useConversation()
 
     async function handleCreateOrJoinRoomSubmit(e) {
         e.preventDefault()
@@ -18,9 +19,10 @@ export default function Form() {
         const conversation = await createOrJoinConversation({ room: name, token })
 
         if (conversation) {
-            setConversationContext(conversation)
-            console.log('conversationContext: ', conversationContext)
-            router.push(`/${name}`)
+            await setConversationContext(conversation)
+            push(`/${name}`)
+        } else {
+            setError(true)
         }
     }
 
@@ -34,14 +36,24 @@ export default function Form() {
                             ${name === 'secret'
                         ? 'focus:border-red-500 border-red-500'
                         : 'border-zinc-300'}`}
-                onChange={(e) => setName(e.target.value)} />
-            <span className={`
+                onChange={(e) => {
+                    setName(e.target.value)
+                    setError(false)
+                }} />
+            <div className={`
                 absolute bottom-0 transition-all
                 ${name === 'secret'
                     ? 'z-20 -bottom-8 text-red-500'
                     : '-z-20'}`}>
                 room name is <strong>required</strong>
-            </span>
+            </div>
+            <div className={`
+                absolute bottom-0 transition-all
+                ${error
+                    ? 'z-20 -bottom-8 text-red-500'
+                    : '-z-20'}`}>
+                You are not authorized to access this room 😢
+            </div>
         </form>
     )
 }
