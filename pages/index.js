@@ -21,12 +21,6 @@ export default function Home({ user }) {
         <div className='flex flex-col justify-center items-center w-full'>
           {user && (<Header user={user} />)}
           <Form />
-          <div>
-            <h1 className='text-white'>Data from user context</h1>
-            <p>{userContext.name}</p>
-            <p>{userContext.email}</p>
-            <p>{userContext.image}</p>
-          </div>
         </div>
       </div>
     </Layout>
