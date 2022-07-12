@@ -10,17 +10,14 @@ export async function createOrJoinConversation({ room, token }) {
                 try {
                     conversation = await client.getConversationByUniqueName(room)
                 } catch (error) {
-                    console.log('error: ', error)
-                }
-
-                try {
-                    conversation = await client.createConversation({
-                        uniqueName: room,
-                        friendlyName: room,
-                    }).then(conversation => {
-                        conversation.join()
-                    })
-                } catch (error) {
+                    if (error.message === 'Forbidden') {
+                        console.log('You are not authorized to access this room 😢')
+                    } else {
+                        conversation = await client.createConversation({
+                            uniqueName: room,
+                            friendlyName: room,
+                        })
+                    }
                     console.log('error: ', error)
                 }
                 console.log('conversation: ', conversation)
