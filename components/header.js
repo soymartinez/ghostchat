@@ -29,7 +29,7 @@ export default function Header({ user, room }) {
             <div className='flex justify-between items-center 
                               w-full transition-all mb-4 gap-8' key={user.email}>
                 <div className='flex items-center gap-2'>
-                    <Image src={user.picture} className='rounded-full' width={32} height={32} />
+                    <Image src={user.picture} className='rounded-full' alt={user.name} width={32} height={32} />
                     <span className='text-md lowercase font-semibold'>{user.name}</span>
                 </div>
                 <div className='flex gap-2'>
