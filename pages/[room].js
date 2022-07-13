@@ -2,28 +2,22 @@ import { unstable_getServerSession } from 'next-auth'
 import { getToken } from 'next-auth/jwt'
 import { useRouter } from 'next/router'
 import { authOptions } from './api/auth/[...nextAuth]'
-import Image from 'next/image'
 
 import Layout from 'components/layout'
+import ConversationInput from 'components/conversation-input'
 import Conversation from 'components/conversation'
+import Header from 'components/header'
 
 export default function Room({ data }) {
-  const { name, picture } = data
-  const router = useRouter()
+  const { query } = useRouter()
+  
   return (
-    <Layout page={`${router.query.room}`}>
+    <Layout page={`${query.room}`}>
       <div className='flex justify-center items-center h-5/6'>
         <div className='flex flex-col justify-center items-center w-full'>
-          <h1 className='text-center text-transparent text-4xl leading-normal
-              bg-clip-text bg-gradient-to-tr
-              from-blue-400 to-blue-700 font-bold'>
-            {router.query.room}
-          </h1>
-          <div className='flex justify-end gap-2 w-full'>
-            <Image src={picture} className='rounded-full' width={32} height={32} />
-            <h1 className='text-lg lowercase font-semibold'>{name}</h1>
-          </div>
-          <Conversation />
+          <Header user={data} room={query.room} />
+          <Conversation room={query.room} />
+          <ConversationInput />
         </div>
       </div>
     </Layout>
@@ -44,6 +38,18 @@ export async function getServerSideProps(context) {
         permanent: false,
       }
     }
+  } else {
+    // try {
+    //   joinConversation({room: context.params, token: getAccessToken()})
+
+    // } catch (e) {
+    //   return {
+    //     redirect: {
+    //       destination: '/',
+    //       permanent: false,
+    //     }
+    //   }
+    // }
   }
 
   const accessTokenNextAuth = await getToken({
