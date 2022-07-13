@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { unstable_getServerSession } from 'next-auth/next'
 import { getToken } from 'next-auth/jwt'
 import { authOptions } from './api/auth/[...nextAuth]'
@@ -6,10 +7,9 @@ import { useUser } from 'context/context'
 import Layout from 'components/layout'
 import Header from 'components/header'
 import Form from 'components/form-select-room'
-import { useEffect } from 'react'
 
 export default function Home({ user }) {
-  const { userContext, setUserContext } = useUser()
+  const { setUserContext } = useUser()
 
   useEffect(() => {
     setUserContext(user)
