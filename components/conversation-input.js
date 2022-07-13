@@ -1,7 +1,7 @@
 import { useConversation } from "context/context"
 import { useState } from "react"
 
-export default function Conversation() {
+export default function ConversationInput() {
     const [message, setMessage] = useState('')
     const { conversationContext } = useConversation()
 
