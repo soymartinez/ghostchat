@@ -20,7 +20,28 @@ export async function createOrJoinConversation({ room, token }) {
                     }
                     console.log('error: ', error)
                 }
-                console.log('conversation: ', conversation)
+                resolve(conversation)
+            }
+        })
+    })
+}
+
+export async function joinConversation({ room, token }) {
+    const client = new Client(token)
+    return new Promise(resolve => {
+        client.on('stateChanged', async state => {
+            if (state === 'initialized') {
+                let conversation
+
+                try {
+                    conversation = await client.getConversationByUniqueName(room)
+                } catch (error) {
+                    if (error.message === 'Forbidden') {
+                        console.log('You are not authorized to access this room 😢')
+                    } else {
+                        console.log('error: ', error)
+                    }
+                }
                 resolve(conversation)
             }
         })
