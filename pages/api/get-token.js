@@ -18,7 +18,7 @@ export default async function getToken(req, res) {
         TWILIO_ACCOUNT_SID,
         TWILIO_API_KEY,
         TWILIO_API_SECRET, {
-        identity: accessTokenNextAuth.email
+        identity: accessTokenNextAuth.name.toLowerCase()
     })
 
     const chatGrant = new ChatGrant({
