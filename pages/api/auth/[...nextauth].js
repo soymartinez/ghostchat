@@ -12,24 +12,6 @@ export const authOptions = {
     pages: {
         signIn: '/signin',
     },
-    callbacks: {
-        async jwt({ token, account }) {
-            if (account) {
-                token.accessToken = account.access_token
-            }
-            return token
-        },
-        async session({ session, token }) {
-            session.accessToken = token.accessToken
-            if (session.user.email === 'martnzomg@gmail.com') {
-                session.user.role = 'admin'
-            } else {
-                session.user.role = 'user'
-            }
-            return session
-        }
-    },
-
 }
 
 export default NextAuth(authOptions)
