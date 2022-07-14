@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { unstable_getServerSession } from 'next-auth/next'
 import { getToken } from 'next-auth/jwt'
-import { authOptions } from './api/auth/[...nextAuth]'
+import { authOptions } from './api/auth/[...nextauth]'
 
 import { useUser } from 'context/context'
 import Layout from 'components/layout'
