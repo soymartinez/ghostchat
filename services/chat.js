@@ -16,6 +16,8 @@ export async function createOrJoinConversation({ room, token }) {
                         conversation = await client.createConversation({
                             uniqueName: room,
                             friendlyName: room,
+                        }).then(conversation => {
+                            conversation.join()
                         })
                     }
                     console.log('error: ', error)
