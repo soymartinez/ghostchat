@@ -5,12 +5,12 @@ import { joinConversation } from 'services/chat'
 import { getAccessToken } from 'services/user'
 
 export default function Conversation({ room }) {
-  const { conversationContext, setConversationContext } = useConversation()
+  const { conversationContext } = useConversation()
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
     getMessagesRoom()
-  }, [])
+  }, [messages])
 
   async function joinRoom() {
     console.log('⭐')
@@ -22,11 +22,9 @@ export default function Conversation({ room }) {
   async function getMessagesRoom() {
     const getMessages = await conversationContext.getMessages()
     setMessages(getMessages.items)
-    console.log('getMessages: ', messages)
 
     conversationContext.on('messageAdded', (message) => {
-      console.log('messageAdded: ', message)
-      setMessages([...messages, message])
+      setMessages(messages => [...messages, message])
       window.scrollTo(0, document.getElementById('chat').scrollHeight)
     })
   }
@@ -36,7 +34,7 @@ export default function Conversation({ room }) {
         border border-zinc-800 p-4 rounded-md mb-4' id='chat'>
       {
         messages.map(({ state: { author, body, index } }) => (
-          <div className='w-min border rounded-t-xl rounded-br-xl relative 
+          <div className='w-2/4 border rounded-t-xl rounded-br-xl relative 
           first:mt-0 last:mb-0 
           my-2 p-2' key={index}>
             <p className='text-white'>{body}</p>
