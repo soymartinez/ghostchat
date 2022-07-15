@@ -18,7 +18,7 @@ export default async function getToken(req, res) {
         TWILIO_ACCOUNT_SID,
         TWILIO_API_KEY,
         TWILIO_API_SECRET, {
-        identity: accessTokenNextAuth.name.toLowerCase()
+        identity: accessTokenNextAuth.username.toLowerCase()
     })
 
     const chatGrant = new ChatGrant({
@@ -29,6 +29,7 @@ export default async function getToken(req, res) {
 
     res.json({
         status: 200,
-        accessTokenTwilio: token.toJwt(),
+        token: token.toJwt(),
+        friendlyName: accessTokenNextAuth.name.toLowerCase()
     })
 }
