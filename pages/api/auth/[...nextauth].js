@@ -12,6 +12,15 @@ export const authOptions = {
     pages: {
         signIn: '/signin',
     },
+    callbacks: {
+        async jwt({ profile, token, account }) {
+            if (account) {
+                token.username = profile.login
+            }
+            return token
+        },
+
+    }
 }
 
 export default NextAuth(authOptions)
