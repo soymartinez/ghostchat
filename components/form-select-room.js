@@ -15,8 +15,12 @@ export default function Form() {
         e.preventDefault()
         if (name.length === 0 || name === 'secret') { return setName('secret') }
 
-        const token = await getAccessToken()
-        const conversation = await createOrJoinConversation({ room: name, token })
+        const { token, friendlyName } = await getAccessToken()
+        const conversation = await createOrJoinConversation({
+            uniqueName: name,
+            friendlyName,
+            token
+        })
 
         if (conversation) {
             await setConversationContext(conversation)
@@ -29,7 +33,7 @@ export default function Form() {
     return (
         <form onSubmit={handleCreateOrJoinRoomSubmit}
             className='relative flex justify-center items-center w-full'>
-            <input type='text' placeholder='room name'
+            <input type='text' placeholder='room name' autoFocus
                 className={`border-2 rounded-full p-2 outline-none transition-all
                             font-semibold text-center focus:text-black
                             focus:outline-none focus:border-zinc-300 w-full
