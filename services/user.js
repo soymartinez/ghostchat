@@ -3,6 +3,6 @@ export async function getAccessToken() {
 
     if (!res.ok) { throw new Error(res.statusText) }
 
-    const { accessTokenTwilio } = await res.json()
-    return accessTokenTwilio
+    const data = await res.json()
+    return data
 }
