@@ -17,15 +17,15 @@ export default function Header({ user, room }) {
 
     return (
         <>
-            <Icon />
-            <h1 className='font-bold text-5xl text-white mb-4 tracking-tight'>
+            {/* <Icon /> */}
+            {/* <h1 className='font-bold text-5xl text-white mb-4 tracking-tight'>
                 Secret chat
                 <span className={`${room ? 'visible' : 'hidden'}
                     text-center text-transparent text-4xl leading-normal bg-clip-text mx-2 
                     bg-gradient-to-tr from-blue-400 to-blue-700 font-bold`}>
                     ({room})
                 </span>
-            </h1>
+            </h1> */}
             <div className='flex justify-between items-center 
                               w-full transition-all mb-4 gap-8' key={user.email}>
                 <div className='flex items-center gap-2'>
@@ -46,19 +46,18 @@ export default function Header({ user, room }) {
                     </button>
                     <button className={`
                                 ${!room ? 'hidden' : 'visible'}
-                                text-md text-black font-bold 
-                                flex justify-center items-center gap-1 px-3 py-1 rounded-full transition-all
-                                bg-white hover:bg-transparent border-2
-                                hover:text-white hover:border-white`}
+                                text-md font-bold 
+                                flex justify-center items-center gap-1 px-3 py-1 rounded-xl transition-all
+                                bg-[#252728] hover:text-[#6c727a]`}
                         onMouseEnter={() => setHoverChange(true)}
                         onMouseLeave={() => setHoverChange(false)}
                         onClick={() => push('/')}>
                         <ChangeIcon active={hoverChange} /> Room
                     </button>
-                    <button className='text-md text-black font-bold 
-                                flex justify-center items-center gap-1 px-3 py-1 rounded-full transition-all
-                                bg-white hover:bg-transparent border-2
-                                hover:text-white hover:border-white'
+                    <button className='
+                                text-md font-bold 
+                                flex justify-center items-center gap-1 px-3 py-1 rounded-xl transition-all
+                                bg-[#252728] hover:text-[#6c727a]'
                         onMouseEnter={() => setHoverSignout(true)}
                         onMouseLeave={() => setHoverSignout(false)}
                         onClick={() => {
