@@ -34,28 +34,26 @@ export default function Form() {
         <form onSubmit={handleCreateOrJoinRoomSubmit}
             className='relative flex justify-center items-center w-full'>
             <input type='text' placeholder='room name' autoFocus
-                className={`border-2 rounded-full p-2 outline-none transition-all
-                            font-semibold text-center focus:text-black
+                className={`rounded-lg p-2 outline-none transition-all bg-transparent
+                            font-semibold text-center focus:text-white border-2 border-[#3d4145]
                             focus:outline-none focus:border-zinc-300 w-full
-                            ${name === 'secret'
-                        ? 'focus:border-red-500 border-red-500'
-                        : 'border-zinc-300'}`}
+                            ${name === 'secret' ? 'focus:border-red-500 border-red-500' : ''}`}
                 onChange={(e) => {
                     setName(e.target.value)
                     setError(false)
                 }} />
+            <span className={`${error || name === 'secret' ? 'z-20 -bottom-8' : '-z-20 bottom-0'}
+                        absolute rotate-45 rounded-sm transition-all 
+                        w-3 h-3 bg-[#252728]`}></span>
             <div className={`
+                rounded-xl
                 absolute bottom-0 transition-all
-                ${name === 'secret'
-                    ? 'z-20 -bottom-8 text-red-500'
-                    : '-z-20'}`}>
+                ${name === 'secret' ? 'z-20 bg-[#252728] -bottom-14 px-4 py-1' : '-z-20 opacity-0'}`}>
                 room name is <strong>required</strong>
             </div>
             <div className={`
-                absolute bottom-0 transition-all
-                ${error
-                    ? 'z-20 -bottom-8 text-red-500'
-                    : '-z-20'}`}>
+                absolute bottom-0 transition-all rounded-xl
+                ${error ? 'z-20 bg-[#252728] -bottom-14 px-4 py-1' : '-z-20 opacity-0'}`}>
                 You are not authorized to access this room 😢
             </div>
         </form>
