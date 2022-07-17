@@ -21,7 +21,7 @@ export default function Home({ user }) {
       <div className='flex justify-center items-center h-5/6'>
         <div className='flex flex-col justify-center items-center w-full duration-500
           bg-[#242628] rounded-2xl p-4 opacity-0' id='main'>
-          {user && (<Header user={user} />)}
+          <Header user={user} />
           <Form />
         </div>
       </div>
