@@ -46,7 +46,7 @@ export default function Conversation({ user, room }) {
     setMessages(getMessages.items)
 
     conversationContext.on('messageAdded', (message) => {
-      setMessages(messages => [...messages, message])
+      setMessages([...messages, message])
     })
   }
 
