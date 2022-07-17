@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 import { useConversation } from 'context/context'
 import { joinConversation } from 'services/chat'
 import { getAccessToken } from 'services/user'
 
-export default function Conversation({ room }) {
+export default function Conversation({ user, room }) {
   const { conversationContext, setConversationContext } = useConversation()
   const [messages, setMessages] = useState([])
 
@@ -43,7 +44,6 @@ export default function Conversation({ room }) {
   async function getMessagesRoom() {
     const getMessages = await conversationContext.getMessages()
     setMessages(getMessages.items)
-    console.log('🚀: ', messages)
 
     conversationContext.on('messageAdded', (message) => {
       setMessages(messages => [...messages, message])
@@ -59,21 +59,31 @@ export default function Conversation({ room }) {
   }
 
   return (
-    <div className='w-full h-96 overflow-auto
-        border border-zinc-800 p-4 rounded-md mb-4'  id='chat'>
+    <div className='w-full rounded-md h-screen overflow-hidden' id='chat'>
       {
-        messages.map(({ author, body, dateCreated, index }) => (
-          <div className='w-3/4 border rounded-t-xl rounded-br-xl relative 
-          first:mt-0 last:mb-0 my-2 p-2' key={index}>
-            <div className='flex gap-2'>
-              <h2 className='text-white font-bold self-baseline'>
-                {author}
-              </h2>
-              <span className='text-[#666971] text-sm self-center'>
-                {dateCreated.toLocaleString('en-US', options)}
-              </span>
+        messages.map(({ author, body, dateCreated }) => (
+          <div key={dateCreated}
+            className={`${body.length < 3 ? 'w-min' : ''}
+                    flex gap-4
+                    first:mt-0 last:mb-0 my-2 p-3
+                    bg-[#1a1b1c] rounded-xl`}>
+            <div className='flex'>
+              <Image src={user.picture} alt={author} className='rounded-full'
+                placeholder='blur' blurDataURL='#151617' layout='fixed' width={45} height={45} />
             </div>
-            <p className=''>{body}</p>
+            <div>
+              <div className='flex items-center gap-2'>
+                <span className={`text-white font-bold self-baseline whitespace-nowrap leading-normal
+                  ${body.length < 3 ? 'hidden' : ''}`}>
+                  {author}
+                </span>
+                <span className={`text-[#666971] text-sm font-semibold whitespace-nowrap leading-normal
+                  ${body.length < 3 ? 'hidden' : ''}`}>
+                  {dateCreated.toLocaleString('en-US', options)}
+                </span>
+              </div>
+              <p className={`leading-tight ${body.length < 3 ? 'text-4xl px-2' : ''}`}>{body}</p>
+            </div>
           </div>
         ))
       }
