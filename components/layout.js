@@ -10,7 +10,7 @@ export default function Layout({ children, page }) {
             </Head>
             
             <main className='max-w-lg md:max-w-3xl  mx-auto h-screen
-                            px-4 md:px-8 lg:px-12'>
+                            px-6 md:px-8 lg:px-12'>
                 {children}
             </main>
         </div>
