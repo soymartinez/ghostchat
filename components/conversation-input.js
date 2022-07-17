@@ -1,8 +1,10 @@
-import { useConversation } from "context/context"
 import { useState } from "react"
+import Image from "next/image"
+
+import { useConversation } from "context/context"
 import Send from "./send"
 
-export default function ConversationInput() {
+export default function ConversationInput({ user }) {
     const [message, setMessage] = useState('')
     const { conversationContext } = useConversation()
 
@@ -14,14 +16,20 @@ export default function ConversationInput() {
         document.getElementById('message').value = ''
     }
     return (
-        <div className='w-full'>
+        <div className='w-full my-6'>
             <form onSubmit={handleSendMessageSubmit}
-                className='relative flex gap-2 justify-center items-center w-full'>
-                <div className='flex justify-center w-full'>
-                    <input type='text' placeholder='message' id='message' autoFocus autoComplete="off"
-                        className={`border-2 rounded-full p-2 outline-none transition-all
-                            font-semibold text-center focus:text-black
-                            focus:outline-none focus:border-zinc-300 w-full
+                className='flex justify-center items-center 
+                            gap-2 relative w-full'>
+                <div className='flex justify-center items-center'>
+                    <Image src={user.picture} alt={user.name} className='rounded-full'
+                        placeholder='blur' blurDataURL='#1a1b1c' layout='fixed' width={42} height={42} />
+                </div>
+                <div className='flex justify-center items-center 
+                                border-2 border-[#262728]
+                                rounded-xl py-3 px-4 w-full'>
+                    <input type='text' placeholder='Write a message' id='message' autoFocus autoComplete="off"
+                        className={`outline-none transition-all w-full
+                            bg-transparent placeholder:text-[#3e4044] focus:border-zinc-300
                             ${message === 'secret'
                                 ? 'focus:border-red-500 border-red-500'
                                 : 'border-zinc-300'}`}
@@ -33,13 +41,13 @@ export default function ConversationInput() {
                             : '-z-20'}`}>
                         message is <strong>required</strong>
                     </span>
+                    {/* <button
+                        type='submit'
+                        className='border-2 hover:border-white rounded-full p-3 px-4 transition-all
+                                    font-semibold text-center text-white hover:animate-pulse'>
+                        <Send />
+                    </button> */}
                 </div>
-                <button
-                    type='submit'
-                    className='border-2 hover:border-white rounded-full p-3 px-4 transition-all
-                    font-semibold text-center text-white hover:animate-pulse'>
-                    <Send />
-                </button>
             </form>
         </div>
     )
