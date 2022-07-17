@@ -1,72 +1,108 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 
-import Icon from './icon'
+import { useConversation } from 'context/context'
 import Signout from './signout'
 import ChangeIcon from './change'
 import AddIcon from './add'
+import Users from './users'
+import Hash from './hash'
 
 export default function Header({ user, room }) {
     const [hoverSignout, setHoverSignout] = useState(false)
     const [hoverChange, setHoverChange] = useState(false)
     const [hoverAddUser, setHoverAddUser] = useState(false)
+    const [participants, setParticipants] = useState([])
 
-    const { push } = useRouter()
+    const { conversationContext } = useConversation()
+
+    useEffect(() => {
+        if (room) {
+            getParticipants()
+        }
+    }, [conversationContext])
+
+    async function getParticipants() {
+        const allParticipants = await conversationContext.participants
+        allParticipants.forEach(p => {
+            setParticipants([p.identity])
+        })
+    }
 
     return (
-        <>
-            {/* <Icon /> */}
-            {/* <h1 className='font-bold text-5xl text-white mb-4 tracking-tight'>
-                Secret chat
-                <span className={`${room ? 'visible' : 'hidden'}
-                    text-center text-transparent text-4xl leading-normal bg-clip-text mx-2 
-                    bg-gradient-to-tr from-blue-400 to-blue-700 font-bold`}>
-                    ({room})
-                </span>
-            </h1> */}
-            <div className='flex justify-between items-center 
-                              w-full transition-all mb-4 gap-8' key={user.email}>
-                <div className='flex items-center gap-2'>
-                    <Image src={user.picture} className='rounded-full' alt={user.name} width={32} height={32} />
-                    <span className='text-md lowercase font-semibold'>{user.name}</span>
-                </div>
-                <div className='flex gap-2'>
-                    <button className={`
-                                ${!room ? 'hidden' : 'visible'}
-                                text-md text-black font-bold 
-                                flex justify-center items-center gap-1 px-3 py-1 rounded-full transition-all
-                                bg-white hover:bg-transparent border-2
-                                hover:text-white hover:border-white`}
+        <div className={`flex items-center 
+                        w-full transition-all gap-8 mb-2 relative
+                        ${room ? 'py-6 border-b-2 border-[#1a1b1c] justify-between' : 'py-4 justify-center'}`}>
+            {
+                room && (
+                    <div className={`flex gap-2 items-center ${room ? 'z-10' : ''}`}>
+                        <div className={`${room ? 'visible' : 'hidden'}
+                                flex justify-start items-center
+                                gap-1 bg-[#151617] px-2 py-1 rounded-md max-w-[6rem] overflow-hidden
+                                text-sm text-[#8f939a] lowercase font-semibold`}>
+                            <Hash className={`${room ? 'visible' : 'hidden'}`} />
+                            {room}
+                        </div>
+                        <div className='
+                                flex justify-center items-center h-full
+                                gap-2 bg-[#151617] px-2 py-1 rounded-md
+                                text-sm text-[#8f939a] lowercase font-semibold'>
+                            <Users /> <span>{participants.length}</span>
+                        </div>
+                    </div>
+                )
+            }
+            {
+                user && (
+                    <div className='flex justify-center items-center gap-2 w-full absolute'>
+                        <Image src={user.picture} alt={user.name} className='rounded-full'
+                            placeholder='blur' blurDataURL='#1a1b1c' width={28} height={28} />
+                        <span className={`${room ? 'hidden' : 'visible'} lowercase`}>{user.name} / {user.username}</span>
+                    </div>
+                )
+            }
+            <div className={`flex gap-6 text-sm ${!room ? 'absolute right-0' : 'z-10'}`}>
+                <Link href={'/'}>
+                    <a
                         onMouseEnter={() => setHoverAddUser(true)}
                         onMouseLeave={() => setHoverAddUser(false)}
-                        onClick={() => push('/')}>
-                        <AddIcon active={hoverAddUser} /> Add
-                    </button>
-                    <button className={`
-                                ${!room ? 'hidden' : 'visible'}
-                                text-md font-bold 
-                                flex justify-center items-center gap-1 px-3 py-1 rounded-xl transition-all
-                                bg-[#252728] hover:text-[#6c727a]`}
+                        className={`${!room ? 'hidden' : 'visible'}
+                            flex justify-center items-center
+                            gap-1 rounded-xl transition-all
+                            text-md font-bold text-[#8f939a] hover:text-white`}>
+                        <AddIcon active={hoverAddUser} />
+                        <span className='hidden md:block'>Add</span>
+                    </a>
+                </Link>
+                <Link href={'/'}>
+                    <a
                         onMouseEnter={() => setHoverChange(true)}
                         onMouseLeave={() => setHoverChange(false)}
-                        onClick={() => push('/')}>
-                        <ChangeIcon active={hoverChange} /> Room
-                    </button>
-                    <button className='
-                                text-md font-bold 
-                                flex justify-center items-center gap-1 px-3 py-1 rounded-xl transition-all
-                                bg-[#252728] hover:text-[#6c727a]'
+                        className={`${!room ? 'hidden' : 'visible'}
+                            flex justify-center items-center
+                            gap-1 rounded-xl transition-all
+                            text-md font-bold text-[#8f939a] hover:text-white`}>
+                        <ChangeIcon active={hoverChange} />
+                        <span className='hidden md:block'>Room</span>
+                    </a>
+                </Link>
+                <Link href={'/signin'}>
+                    <a
+                        onClick={() => signOut()}
                         onMouseEnter={() => setHoverSignout(true)}
                         onMouseLeave={() => setHoverSignout(false)}
-                        onClick={() => {
-                            signOut({ callbackUrl: '/signin' })
-                        }}>
-                        <Signout active={hoverSignout} /> Sign Out
-                    </button>
-                </div>
+                        className={`
+                            flex justify-center items-center
+                            gap-1 rounded-xl transition-all
+                            text-md font-bold text-[#8f939a] hover:text-white`}>
+                        <Signout active={hoverSignout} />
+                        <span className='hidden md:block'>Sign out</span>
+                    </a>
+                </Link>
+
             </div>
-        </>
+        </div>
     )
 }
