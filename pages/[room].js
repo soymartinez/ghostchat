@@ -13,11 +13,11 @@ export default function Room({ user }) {
   
   return (
     <Layout page={`${query.room}`}>
-      <div className='flex justify-center items-center h-5/6'>
-        <div className='flex flex-col justify-center items-center w-full'>
+      <div className='flex justify-center items-center h-screen'>
+        <div className='flex flex-col w-full h-full'>
           <Header user={user} room={query.room} />
-          <Conversation room={query.room} />
-          <ConversationInput />
+          <Conversation user={user} room={query.room} />
+          <ConversationInput user={user} />
         </div>
       </div>
     </Layout>
