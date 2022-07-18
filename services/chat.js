@@ -27,25 +27,3 @@ export async function createOrJoinConversation({ uniqueName, friendlyName, token
         })
     })
 }
-
-export async function joinConversation({ uniqueName, token }) {
-    const client = new Client(token)
-    return new Promise(resolve => {
-        client.on('stateChanged', async state => {
-            if (state === 'initialized') {
-                let conversation
-
-                try {
-                    conversation = await client.getConversationByUniqueName(uniqueName)
-                } catch (error) {
-                    if (error.message === 'Forbidden') {
-                        console.log('You are not authorized to access this room 😢')
-                    } else {
-                        console.log('error: ', error)
-                    }
-                }
-                resolve(conversation)
-            }
-        })
-    })
-}
