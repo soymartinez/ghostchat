@@ -19,6 +19,10 @@ export const authOptions = {
             }
             return token
         },
+        async session({ session, token }) {
+            session.user.username = token.username
+            return session
+        }
 
     }
 }
