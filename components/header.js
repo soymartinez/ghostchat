@@ -95,7 +95,7 @@ export default function Header({ room }) {
                         <span className='hidden md:block'>Room</span>
                     </a>
                 </Link>
-                <button onClick={() => signOut()}>
+                <button onClick={() => signOut()}
                     onMouseEnter={() => setHoverSignout(true)}
                     onMouseLeave={() => setHoverSignout(false)}
                     className={`
