@@ -1,7 +1,12 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const authOptions = {
+    adapter: new PrismaAdapter(prisma),
     providers: [
         GitHub({
             clientId: process.env.NEXT_PUBLIC_GITHUB_ID,
@@ -13,17 +18,18 @@ export const authOptions = {
         signIn: '/signin',
     },
     callbacks: {
-        async jwt({ profile, token, account }) {
+        async signIn({ user, account, profile }) {
             if (account) {
-                token.username = profile.login
+                user.username = profile.login
             }
-            return token
+            return user
         },
-        async session({ session, token }) {
-            session.user.username = token.username
+        async session({ session, user }) {
+            if (user) {
+                session = user
+            }
             return session
-        }
-
+        },
     }
 }
 
