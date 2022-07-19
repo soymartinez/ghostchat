@@ -3,32 +3,39 @@ import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useConversation } from 'context/context'
+import { useChat, useUser } from 'context/context'
+
 import Signout from './signout'
 import ChangeIcon from './change'
 import AddIcon from './add'
 import Users from './users'
 import Hash from './hash'
 
-export default function Header({ user, room }) {
+export default function Header({ room }) {
     const [hoverSignout, setHoverSignout] = useState(false)
     const [hoverChange, setHoverChange] = useState(false)
     const [hoverAddUser, setHoverAddUser] = useState(false)
     const [participants, setParticipants] = useState([])
 
-    const { conversationContext } = useConversation()
+    const { chat } = useChat()
+    const { user, createUser } = useUser()
 
     useEffect(() => {
-        if (room) {
-            getParticipants()
-        }
-    }, [conversationContext])
+        createUser()
+        getParticipants()
+    }, [chat])
 
     async function getParticipants() {
-        const allParticipants = await conversationContext.participants
-        allParticipants.forEach(p => {
-            setParticipants([p.identity])
-        })
+        if (room) {
+            try {
+                const allParticipants = await chat.participants
+                allParticipants.forEach(p => {
+                    setParticipants([p.identity])
+                })
+            } catch (error) {
+                console.log('👥 wait for participants...')
+            }
+        }
     }
 
     return (
@@ -49,17 +56,17 @@ export default function Header({ user, room }) {
                                 flex justify-center items-center h-full
                                 gap-2 bg-[#151617] px-2 py-1 rounded-md
                                 text-sm text-[#8f939a] lowercase font-semibold'>
-                            <Users /> <span>{participants.length}</span>
+                            <Users /> {<span>{chat ? participants.length : 'hola'} </span>}
                         </div>
                     </div>
                 )
             }
             {
-                user && (
+                user.image && (
                     <div className='flex justify-center items-center gap-2 w-full absolute'>
-                        <Image src={user.picture} alt={user.name} className='rounded-full'
+                        <Image src={user.image} alt={user.name} className='rounded-full'
                             placeholder='blur' blurDataURL='#1a1b1c' width={28} height={28} />
-                        <span className={`${room ? 'hidden' : 'visible'} lowercase`}>{user.name} / {user.username}</span>
+                        <span className={`${room ? 'hidden' : 'visible'} lowercase font-bold`}>{user.username}</span>
                     </div>
                 )
             }
@@ -88,9 +95,8 @@ export default function Header({ user, room }) {
                         <span className='hidden md:block'>Room</span>
                     </a>
                 </Link>
-                <Link href={'/signin'}>
-                    <a
-                        onClick={() => signOut()}
+                <button onClick={() => signOut()}>
+                    <a href='/signin'
                         onMouseEnter={() => setHoverSignout(true)}
                         onMouseLeave={() => setHoverSignout(false)}
                         className={`
@@ -100,7 +106,7 @@ export default function Header({ user, room }) {
                         <Signout active={hoverSignout} />
                         <span className='hidden md:block'>Sign out</span>
                     </a>
-                </Link>
+                </button>
 
             </div>
         </div>
