@@ -96,18 +96,15 @@ export default function Header({ room }) {
                     </a>
                 </Link>
                 <button onClick={() => signOut()}>
-                    <a href='/signin'
-                        onMouseEnter={() => setHoverSignout(true)}
-                        onMouseLeave={() => setHoverSignout(false)}
-                        className={`
-                            flex justify-center items-center
-                            gap-1 rounded-xl transition-all
-                            text-md font-bold text-[#8f939a] hover:text-white`}>
-                        <Signout active={hoverSignout} />
-                        <span className='hidden md:block'>Sign out</span>
-                    </a>
+                    onMouseEnter={() => setHoverSignout(true)}
+                    onMouseLeave={() => setHoverSignout(false)}
+                    className={`
+                        flex justify-center items-center
+                        gap-1 rounded-xl transition-all
+                        text-md font-bold text-[#8f939a] hover:text-white`}>
+                    <Signout active={hoverSignout} />
+                    <span className='hidden md:block'>Sign out</span>
                 </button>
-
             </div>
         </div>
     )
