@@ -13,7 +13,7 @@
     "@prisma/client": "4.0.0",
     "@twilio/conversations": "2.1.0",
     "next": "12.2.2",
-    "next-auth": "4.10.0",
+    "next-auth": "4.10.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "twilio": "3.78.0"
