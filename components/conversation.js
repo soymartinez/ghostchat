@@ -8,12 +8,9 @@ export default function Conversation({ user, room }) {
 
   useEffect(() => {
     getCurrentMessages()
-  }, [chat])
-
-  useEffect(() => {
     scrollToBottom()
     getNewMessages()
-  }, [messages])
+  }, [messages, chat])
 
   function scrollToBottom() {
     const chatBox = document.getElementById('chatBox')
@@ -24,7 +21,6 @@ export default function Conversation({ user, room }) {
     try {
       const getMessages = await chat.getMessages()
       setMessages(getMessages.items)
-      console.log('🤲 Current messages')
     } catch (error) {
       console.log('#1 .. 🤲 GET CURRENT MESSAGES')
     }
@@ -34,7 +30,6 @@ export default function Conversation({ user, room }) {
     try {
       chat.on('messageAdded', (message) => {
         setMessages([...messages, message])
-        console.log('👀 New message')
       })
     } catch (error) {
       console.log('#2 .. 👀 GET NEW MESSAGES')
@@ -50,16 +45,16 @@ export default function Conversation({ user, room }) {
   }
 
   return (
-    <div className='w-full rounded-md h-screen overflow-hidden' id='chatBox'>
+    <div className='w-full rounded-md h-screen overflow-auto' id='chatBox'>
       {
-        messages.map(({ author, body, dateCreated }) => (
-          <div key={body + dateCreated + author}
+        messages.map(({ author, body, dateCreated, index }) => (
+          <div key={index}
             className={`${body.length < 3 ? 'w-min' : ''}
                     flex gap-4
                     first:mt-0 last:mb-0 my-2 p-3
                     bg-[#1a1b1c] rounded-xl`}>
             <div className='flex'>
-              <Image src={user.image} alt={author} className='rounded-full'
+              <Image src={user.username.toLowerCase() === author ? user.image : 'https://avatars.githubusercontent.com/u/72507996?v=4'} alt={author} className='rounded-full'
                 placeholder='blur' blurDataURL='#151617' layout='fixed' width={45} height={45} />
             </div>
             <div>
