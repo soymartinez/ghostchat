@@ -12,7 +12,10 @@ export default function ConversationInput({ user }) {
         e.preventDefault()
         if (message.length === 0 || message === 'secret') { return setMessage('secret') }
 
-        chat.sendMessage(message)
+        chat.sendMessage(message, {
+            image: user.image,
+        })
+        setMessage('')
         document.getElementById('message').value = ''
     }
     return (
