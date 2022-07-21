@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { useChat, useUser } from 'context/context'
+import { getChatParticipants } from 'services/chat'
 
 import Signout from './signout'
 import ChangeIcon from './change'
@@ -30,7 +31,7 @@ export default function Header({ room }) {
     async function getParticipants() {
         if (room) {
             try {
-                const listParticipants = await chat.getParticipants()
+                const listParticipants = await getChatParticipants(room)
                 setParticipants(listParticipants)
             } catch (error) {
                 console.log('👥 wait for participants...')
@@ -47,10 +48,13 @@ export default function Header({ room }) {
                     <div className={`flex gap-2 items-center ${room ? 'z-10' : ''}`}>
                         <div className={`${room ? 'visible' : 'hidden'}
                                 flex justify-start items-center
-                                gap-1 bg-[#151617] px-2 py-1 rounded-md max-w-[6rem] overflow-hidden
+                                gap-1 bg-[#151617] px-2 py-1 rounded-md  
+                                max-w-[6rem] whitespace-nowrap overflow-ellipsis overflow-hidden
                                 text-sm text-[#8f939a] lowercase font-semibold`}>
-                            <Hash className={`${room ? 'visible' : 'hidden'}`} />
-                            {room}
+                            <div>
+                                <Hash className={`${room ? 'visible' : 'hidden'}`} />
+                            </div>
+                            <span>{room}</span>
                         </div>
                         <div className='
                                 flex justify-center items-center h-full
@@ -106,12 +110,11 @@ export default function Header({ room }) {
             </div>
             {
                 room && (
-                    <div className={`absolute transition-all rounded-b-3xl 
-                            bg-gradient-to-b from-[#0f0f10] via-[#0f0f10]
-                            w-full h-52 flex justify-center items-center -z-50 top-0
-                            ${addUser ? 'px-4' : '-top-80'}
-                            `}>
-                        <AddUser />
+                    <div className={`
+                        transition-all absolute w-full
+                        -z-50 top-0 
+                        ${addUser ? 'px-4' : '-top-80'}`}>
+                        <AddUser room={room} />
                     </div>
                 )
             }
