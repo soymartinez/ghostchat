@@ -1,8 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { getSession } from 'next-auth/react'
 
-import { getAccessToken } from 'services/user'
-import { createOrJoinConversation } from 'services/chat'
+import { createOrJoinConversation, updateParticipantAttributes } from 'services/chat'
 
 const Chat = createContext()
 const User = createContext()
@@ -16,8 +15,7 @@ export const ChatContext = ({ children }) => {
 
     async function createOrJoinChat(room) {
         try {
-            const { token, friendlyName } = await getAccessToken()
-            const chat = await createOrJoinConversation({ uniqueName: room, friendlyName, token })
+            const chat = await createOrJoinConversation({ uniqueName: room })
             if (chat) {
                 setChat(chat)
                 return chat
@@ -35,6 +33,8 @@ export const ChatContext = ({ children }) => {
         try {
             const user = await getSession()
             setUser(user)
+
+            await updateParticipantAttributes(user.username.toLowerCase(), user.image)
         } catch (error) {
             console.log(error)
         }
