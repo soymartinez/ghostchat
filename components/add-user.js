@@ -22,16 +22,17 @@ export default function AddUser() {
         setConflict(true)
         return console.log(`It's already in the room 😎`)
       }
-      console.log('👶 adding a new participants...', error)
+      console.log('👶 adding a new participant')
     }
   }
 
   return (
-    <form onSubmit={handleJoinUser} className={`flex justify-center items-center relative transition-all
-      border-2 ${conflict || username === 'secret' ? 'border-red-500' : 'border-[#262728]'}
-      ${conflict ? 'border-[#3480cc]' : 'border-[#262728]'}
-      rounded-xl py-2 pl-4 pr-2 w-full`}>
-      <input type='text' placeholder='Write a username' id='username' autoFocus autoComplete="off"
+    <form onSubmit={handleJoinUser} className={`
+      flex justify-center items-center relative transition-all -z-30
+      ${conflict || username === 'secret' ? 'border-red-500' : 'border-[#262728]'}
+      border-2 rounded-xl py-2 pl-4 pr-2 w-full bg-[#151617]
+      ${conflict ? 'border-[#3480cc]' : 'border-[#262728]'}`}>
+      <input type='text' placeholder='Write a username' id='username' autoFocus
         className={`outline-none transition-all w-full
           bg-transparent placeholder:text-[#3e4044] focus:border-zinc-300
           ${username === 'secret'
@@ -42,7 +43,7 @@ export default function AddUser() {
           setConflict(false)
           setIsAdded(false)
         }} />
-      <span className={`${conflict || username === 'secret' ? 'z-20 -bottom-6' : '-z-20 bottom-0'}
+      <span className={`${conflict || username === 'secret' ? 'z-20 -bottom-6' : '-z-20 bottom-0 opacity-0'}
         absolute rotate-45 rounded-sm transition-all w-3 h-3
         ${conflict ? 'bg-[#3480cc]' : 'bg-red-500'}`}></span>
       <div className={`
@@ -53,12 +54,12 @@ export default function AddUser() {
       <div className={`
         absolute bottom-0 transition-all rounded-xl w-auto text-center
         ${conflict ? 'z-20 bg-[#3480cc] -bottom-12 px-4 py-1' : '-z-20 opacity-0'}`}>
-        <strong>{ username }</strong> already in the room 😎
+        <strong>{username}</strong> is already in the room 😎
       </div>
       <div className={`
         absolute bottom-0 transition-all rounded-xl w-auto text-center
         ${isAdded ? 'z-20 bg-[#42a0ff] -bottom-12 px-4 py-1' : '-z-20 opacity-0'}`}>
-        { username } has joined the room 
+        {username} has joined the room
       </div>
       <button
         type='submit'
