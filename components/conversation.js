@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useChat } from 'context/context'
+import Loader from './loader'
 
-export default function Conversation({ user, room }) {
+export default function Conversation() {
   const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
   const { chat } = useChat()
+
+  useEffect(() => {
+    getCurrentMessages()
+  }, [chat])
 
   useEffect(() => {
     scrollToBottom()
     getNewMessages()
   }, [messages])
 
-  useEffect(() => {
-    getCurrentMessages()
-  }, [chat])
 
   function scrollToBottom() {
     const chatBox = document.getElementById('chatBox')
@@ -24,6 +27,7 @@ export default function Conversation({ user, room }) {
     try {
       const messages = await chat.getMessages(200)
       setMessages(messages.items)
+      setLoading(false)
     } catch (error) {
       console.log('#1 .. 🤲 GET CURRENT MESSAGES')
     }
@@ -52,15 +56,19 @@ export default function Conversation({ user, room }) {
         scrollbar-thin scrollbar-thumb-blue-500' id='chatBox'>
       {
         messages.length > 0 ?
-          messages.map(({ author, body, dateCreated, index }) => (
+          messages.map(({ author, body, attributes: { image }, dateCreated, index }) => (
             <div key={index}
               className={`${body.length < 3 ? 'w-min' : ''}
                     flex gap-4
                     first:mt-0 last:mb-0 my-2 p-3
                     bg-[#1a1b1c] rounded-xl`}>
               <div className='flex'>
-                <Image src={user.username.toLowerCase() === author ? user.image : 'https://avatars.githubusercontent.com/u/72507996?v=4'} alt={author} className='rounded-full'
-                  placeholder='blur' blurDataURL='#151617' layout='fixed' width={45} height={45} />
+                {
+                  image ?
+                    <Image src={image} alt={author} className='rounded-full'
+                      placeholder='blur' blurDataURL='#151617' layout='fixed' width={45} height={45} />
+                    : <div className='rounded-full bg-[#151617] w-[45px] h-[45px]' />
+                }
               </div>
               <div>
                 <div className='flex items-center gap-2'>
@@ -76,7 +84,13 @@ export default function Conversation({ user, room }) {
                 <p className={`leading-tight ${body.length < 3 ? 'text-4xl px-2' : ''}`}>{body}</p>
               </div>
             </div>
-          )) : <p className='text-center text-lg font-semibold text-[#42a0ff]'>{messages.length > 1 ? 'No messages yet 👻' : 'loading...' }</p>
+          ))
+          :
+          <div className='flex justify-center items-center h-full transition-all'>
+            {loading
+              ? <Loader size={45} />
+              : <p className='text-center text-lg font-semibold text-[#42a0ff]'>No messages yet 👻</p>}
+          </div>
       }
     </div>
   )
