@@ -6,6 +6,7 @@ import { useChat } from 'context/context'
 import Layout from 'components/layout'
 import Header from 'components/header'
 import Form from 'components/form-select-room'
+import Subscribed from 'components/subscribed-chats'
 
 export default function Home() {
   const { resetChat } = useChat()
@@ -22,6 +23,7 @@ export default function Home() {
           opacity-0 relative' id='main'>
           <Header />
           <Form />
+          <Subscribed />
         </div>
       </div>
     </Layout>
