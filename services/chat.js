@@ -11,7 +11,7 @@ export async function createOrJoinConversation({ uniqueName, friendlyName, token
                     conversation = await client.getConversationByUniqueName(uniqueName)
                 } catch (error) {
                     if (error.message === 'Forbidden') {
-                        return console.log('You are not authorized to access this room 😢')
+                        console.log('You are not authorized to access this room 😢')
                     } else {
                         conversation = await client.createConversation({
                             uniqueName,
@@ -20,7 +20,6 @@ export async function createOrJoinConversation({ uniqueName, friendlyName, token
 
                         await conversation.join()
                     }
-                    console.log('error: ', error)
                 }
                 resolve(conversation)
             }
@@ -52,13 +51,11 @@ export async function addParticipant(token, uniqueName, username) {
     return conversation.add(username)
 }
 
-export async function updateParticipant(token, uniqueName, username, body) {
+export async function updateParticipantAttributes(token, username, image) {
     const client = new Client(token)
-    const conversation = await client.getConversationByUniqueName(uniqueName)
-    const participant = await conversation.getParticipantByIdentity(username)
-    const update = await participant.attributes({
-        friendlyName: body.friendlyName,
-        image: body.image,
+    const user = await client.getUser(username)
+    const update = await user.updateAttributes({
+        image,
     })
     return update
 }
