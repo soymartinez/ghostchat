@@ -30,8 +30,8 @@ export default function Subscribed() {
             {
                 chats && chats.length > 0 ?
                     chats.map(chat => (
-                        <>
-                            <Link href={chat.uniqueName} key={chat.sid}>
+                        <div  key={chat.sid}>
+                            <Link href={chat.uniqueName || '/'}>
                                 <a>
                                     <div className='flex bg-[#242628] transition-all p-4 rounded-2xl cursor-pointer
                                     hover:shadow-2xl shadow-blue-500 ease-in duration-500 relative'>
@@ -42,13 +42,13 @@ export default function Subscribed() {
                                     </div>
                                 </a>
                             </Link>
-                            <div className='w-min'>
+                            {/* <div className='w-min'>
                                 <button onClick={() => deleteSubscribedChat(chat.sid)}
                                     className='px-2 rounded-full bg-[#151617] hover:bg-[#333638]'>
                                     Delete
                                 </button>
-                            </div>
-                        </>
+                            </div> */}
+                        </div>
                     ))
                     :
                     <div className='absolute grid place-content-center w-full h-full'>
