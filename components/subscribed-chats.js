@@ -1,67 +1,60 @@
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useEffect, useState } from 'react'
-import { deleteChat, getSubscribedChats, joinChat } from 'services/chat'
-import { getAccessToken } from 'services/user';
+import { deleteChat, getSubscribedChats } from 'services/chat'
+import Loader from './loader';
 
 export default function Subscribed() {
     const [chats, setChats] = useState([])
-    const [loading, setLoading] = useState(true)
-
-    const { push } = useRouter()
 
     useEffect(() => {
         subscribedChats()
-    }, []);
+    }, [chats]);
 
     async function subscribedChats() {
-        const { token } = await getAccessToken()
-        await getSubscribedChats(token)
+        await getSubscribedChats()
             .then(setChats)
             .catch(console.error)
     }
 
     async function deleteSubscribedChat(chatSid) {
-        const { token } = await getAccessToken()
-        await deleteChat(token, chatSid)
+        await deleteChat(chatSid)
             .then(subscribedChats)
             .catch(console.error)
     }
 
-    async function joinSubscribedChat(uniqueName) {
-        console.log('🎯 joinSubscribedChat', uniqueName)
-        const { token } = await getAccessToken()
-        await joinChat(token, uniqueName)
-            .then(() => push(`/${uniqueName}`))
-            .catch(console.error)
-    }
-
     return (
-        <div className='grid grid-cols-3 grid-flow-row gap-2
-            w-full max-h-80 overflow-auto mt-2
+        <div className='grid grid-flow-row grid-cols-2 gap-2
+            w-full h-80 overflow-auto mt-2 relative
             scrollbar-thin scrollbar-thumb-blue-500
             transition-all rounded-2xl'>
             {
                 chats && chats.length > 0 ?
-                    chats.map(message => (
-                        <div key={message.sid}
-                            onClick={() => console.log(message.sid)}
-                            className='bg-[#242628] transition-all p-4 rounded-2xl cursor-pointer
-                            hover:shadow-sm shadow-blue-500'>
-                            <h1 className='text-md text-blue-500 font-bold'>{message.uniqueName}</h1>
-
-                            <div className='flex justify-end gap-2'>
-                                <button type='cl' onClick={() => deleteSubscribedChat(message.sid)}
-                                    className='px-2 rounded-full bg-[#151617]'>
+                    chats.map(chat => (
+                        <>
+                            <Link href={chat.uniqueName} key={chat.sid}>
+                                <a>
+                                    <div className='flex bg-[#242628] transition-all p-4 rounded-2xl cursor-pointer
+                                    hover:shadow-2xl shadow-blue-500 ease-in duration-500 relative'>
+                                        <div className=''>
+                                            <h1 className='text-md text-blue-500 font-bold'>{chat.uniqueName}</h1>
+                                            <h1 className='text-md font-bold'>{chat.createdBy}</h1>
+                                        </div>
+                                    </div>
+                                </a>
+                            </Link>
+                            <div className='w-min'>
+                                <button onClick={() => deleteSubscribedChat(chat.sid)}
+                                    className='px-2 rounded-full bg-[#151617] hover:bg-[#333638]'>
                                     Delete
                                 </button>
-
-                                <button onClick={() => addParticipant(message.sid)}>
-                                    Add
-                                </button>
                             </div>
-                        </div>
-                    )) : null
+                        </>
+                    ))
+                    :
+                    <div className='absolute grid place-content-center w-full h-full'>
+                        <Loader size={35} />
+                    </div>
             }
-        </div>
+        </div >
     )
 }
