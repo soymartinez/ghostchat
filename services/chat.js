@@ -39,12 +39,6 @@ export async function deleteChat(token, chatSid) {
     conversation.delete()
 }
 
-export async function joinChat(token, uniqueName) {
-    const client = new Client(token)
-    const conversation = await client.getConversationByUniqueName(uniqueName)
-    return conversation
-}
-
 export async function addParticipant(token, uniqueName, username) {
     const client = new Client(token)
     const conversation = await client.getConversationByUniqueName(uniqueName)
