@@ -1,6 +1,8 @@
 import { Client } from '@twilio/conversations'
+import { getAccessToken } from './user'
 
-export async function createOrJoinConversation({ uniqueName, friendlyName, token }) {
+export async function createOrJoinConversation({ uniqueName }) {
+    const { token, friendlyName } = await getAccessToken()
     const client = new Client(token)
     return new Promise(resolve => {
         client.on('stateChanged', async state => {
@@ -27,29 +29,42 @@ export async function createOrJoinConversation({ uniqueName, friendlyName, token
     })
 }
 
-export async function getSubscribedChats(token) {
+export async function getSubscribedChats() {
+    const { token } = await getAccessToken()
     const client = new Client(token)
     const chatList = await client.getSubscribedConversations()
     return chatList.items
 }
 
-export async function deleteChat(token, chatSid) {
+export async function deleteChat(chatSid) {
+    const { token } = await getAccessToken()
     const client = new Client(token)
     const conversation = await client.getConversationBySid(chatSid)
     conversation.delete()
 }
 
-export async function addParticipant(token, uniqueName, username) {
+export async function addParticipant(uniqueName, username) {
+    const { token } = await getAccessToken()
     const client = new Client(token)
     const conversation = await client.getConversationByUniqueName(uniqueName)
-    return conversation.add(username)
+    const participant = await conversation.add(username)
+    return participant
 }
 
-export async function updateParticipantAttributes(token, username, image) {
+export async function updateParticipantAttributes(username, image) {
+    const { token } = await getAccessToken()
     const client = new Client(token)
     const user = await client.getUser(username)
     const update = await user.updateAttributes({
         image,
     })
     return update
+}
+
+export async function getChatParticipants(uniqueName) {
+    const { token } = await getAccessToken()
+    const client = new Client(token)
+    const conversation = await client.getConversationByUniqueName(uniqueName)
+    const participants = await conversation.getParticipants()
+    return participants
 }
