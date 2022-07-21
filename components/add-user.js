@@ -13,7 +13,7 @@ export default function AddUser() {
     if (username.length === 0 || username === 'secret') { return setUsername('secret') }
 
     try {
-      const newParticipant = await chat.add(username.toLowerCase())
+      const newParticipant = await chat.add(username)
       console.log('newParticipant: ', newParticipant)
       document.getElementById('username').value = ''
       setIsAdded(true)
@@ -32,14 +32,14 @@ export default function AddUser() {
       ${conflict || username === 'secret' ? 'border-red-500' : 'border-[#262728]'}
       border-2 rounded-xl py-2 pl-4 pr-2 w-full bg-[#151617]
       ${conflict ? 'border-[#3480cc]' : 'border-[#262728]'}`}>
-      <input type='text' placeholder='Write a username' id='username' autoFocus
-        className={`outline-none transition-all w-full
+      <input type='text' placeholder='Write a username' id='username' autoFocus autoComplete="off"
+        className={`outline-none transition-all w-full lowercase
           bg-transparent placeholder:text-[#3e4044] focus:border-zinc-300
           ${username === 'secret'
             ? 'focus:border-red-500 border-red-500'
             : 'border-zinc-300'}`}
         onChange={(e) => {
-          setUsername(e.target.value)
+          setUsername(e.target.value.toLowerCase())
           setConflict(false)
           setIsAdded(false)
         }} />
