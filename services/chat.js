@@ -61,7 +61,15 @@ export async function updateParticipantAttributes(username, image) {
     return update
 }
 
-export async function getChatParticipants(uniqueName) {
+export async function getChatParticipantsBySid(chatSid) {
+    const { token } = await getAccessToken()
+    const client = new Client(token)
+    const conversation = await client.getConversationBySid(chatSid)
+    const participants = await conversation.getParticipants()
+    return participants
+}
+
+export async function getChatParticipantsByUniqueName(uniqueName) {
     const { token } = await getAccessToken()
     const client = new Client(token)
     const conversation = await client.getConversationByUniqueName(uniqueName)
