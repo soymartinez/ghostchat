@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { useChat, useUser } from 'context/context'
-import { getChatParticipants } from 'services/chat'
+import { getChatParticipantsByUniqueName } from 'services/chat'
 
 import Signout from './signout'
 import ChangeIcon from './change'
@@ -12,11 +12,13 @@ import AddIcon from './add'
 import Users from './users'
 import Hash from './hash'
 import AddUser from './add-user'
+import Close from './close'
 
 export default function Header({ room }) {
     const [hoverSignout, setHoverSignout] = useState(false)
     const [hoverChange, setHoverChange] = useState(false)
     const [hoverAddUser, setHoverAddUser] = useState(false)
+    const [hoverClose, setHoverClose] = useState(false)
     const [participants, setParticipants] = useState([])
     const [addUser, setAddUser] = useState(false)
 
@@ -31,7 +33,7 @@ export default function Header({ room }) {
     async function getParticipants() {
         if (room) {
             try {
-                const listParticipants = await getChatParticipants(room)
+                const listParticipants = await getChatParticipantsByUniqueName(room)
                 setParticipants(listParticipants)
             } catch (error) {
                 console.log('👥 wait for participants...')
@@ -114,7 +116,14 @@ export default function Header({ room }) {
                         transition-all absolute w-full
                         -z-50 top-0 
                         ${addUser ? 'px-4' : '-top-80'}`}>
-                        <AddUser room={room} />
+                        <button
+                            onClick={() => setAddUser(false)}
+                            onMouseEnter={() => setHoverClose(true)}
+                            onMouseLeave={() => setHoverClose(false)}
+                            className={`transition-all absolute right-0 top-[4.7rem]`}>
+                            <Close active={hoverClose} />
+                        </button>
+                        <AddUser close={addUser} room={room} />
                     </div>
                 )
             }
