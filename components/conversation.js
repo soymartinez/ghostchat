@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useChat } from 'context/context'
 import Loader from './loader'
+import { options } from 'lib/options'
 
 export default function Conversation() {
   const [messages, setMessages] = useState([])
@@ -41,14 +42,6 @@ export default function Conversation() {
     } catch (error) {
       console.log('#2 .. 👀 GET NEW MESSAGES')
     }
-  }
-
-  const options = {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
   }
 
   return (
