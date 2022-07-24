@@ -28,6 +28,8 @@ export default async function getToken(req, res) {
     res.json({
         status: 200,
         token: token.toJwt(),
-        friendlyName: session.name.toLowerCase()
+        identity: session.username.toLowerCase(),
+        friendlyName: session.name.toLowerCase(),
+        image: session.image
     })
 }
