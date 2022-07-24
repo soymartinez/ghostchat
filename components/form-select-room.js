@@ -1,25 +1,24 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { useChat } from 'context/context'
 import Loader from './loader'
+import { createOrJoinChat } from 'services/chat'
 
 export default function Form() {
-    const { push } = useRouter()
-    const [chatname, setChatname] = useState('')
-    const [error, setError] = useState(false)
+    const [uniqueName, setUniqueName] = useState('')
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
+    const { push } = useRouter()
 
-    const { createOrJoinChat } = useChat()
 
     async function handleCreateOrJoinRoomSubmit(e) {
         e.preventDefault()
-        if (chatname.length === 0 || chatname === 'secret') { return setChatname('secret') }
+        if (uniqueName.length === 0 || uniqueName === 'secret') { return setUniqueName('secret') }
         
         try {
             setLoading(true)
-            const room = await createOrJoinChat(chatname)
-            if (room) push(`/${chatname}`)
+            const room = await createOrJoinChat(uniqueName)
+            if (room) push(`/${uniqueName}`)
             else setError(true)
         } catch (error) {
             console.log('error', error)
@@ -33,25 +32,25 @@ export default function Form() {
         <form onSubmit={handleCreateOrJoinRoomSubmit}
             className='w-full relative'>
             <div className={`flex justify-center items-center 
-                            border-2 ${error || chatname === 'secret' ? 'border-red-500' : 'border-[#262728]'}
+                            border-2 ${error || uniqueName === 'secret' ? 'border-red-500' : 'border-[#262728]'}
                             rounded-xl py-2 pl-4 pr-2 w-full`}>
-                <input type='text' placeholder='Write a chat name' autoFocus
-                    className={`outline-none transition-all w-full lowercase
+                <input type='text' placeholder='Create or join a chat' autoFocus
+                    className={`outline-none transition-all w-full lowercase placeholder:normal-case
                                 bg-transparent placeholder:text-[#3e4044] focus:border-zinc-300
-                            ${chatname === 'secret' || error
+                            ${error || uniqueName === 'secret'
                             ? 'focus:border-red-500 border-red-500 placeholder:text-red-500'
                             : 'placeholder:text-[#3e4044] border-zinc-300'}`}
                     onChange={(e) => {
-                        setChatname(e.target.value.toLowerCase())
+                        setUniqueName(e.target.value.toLowerCase())
                         setError(false)
                     }} />
                 <span className={`
-                    ${error || chatname === 'secret' ? 'z-20 -bottom-5' : '-z-20 opacity-0'}
+                    ${error || uniqueName === 'secret' ? 'z-20 -bottom-5' : '-z-20 opacity-0'}
                         absolute bottom-0 rotate-45 rounded-sm transition-all
                         w-3 h-3 bg-red-500`}></span>
                 <div className={`
                     absolute bottom-0 transition-all rounded-xl w-auto text-center
-                    ${chatname === 'secret' ? 'z-20 bg-red-500 -bottom-11 px-4 py-1' : '-z-20 opacity-0'}`}>
+                    ${uniqueName === 'secret' ? 'z-20 bg-red-500 -bottom-11 px-4 py-1' : '-z-20 opacity-0'}`}>
                     chat name is <strong>required</strong>
                 </div>
                 <div className={`
