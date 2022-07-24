@@ -12,9 +12,9 @@ export default function Home() {
   const { resetChat } = useChat()
 
   useEffect(() => {
-    document.getElementById('main').style.opacity = 1
     resetChat()
-  }, []);
+    document.getElementById('main').style.opacity = 1
+  }, [])
 
   return (
     <Layout page={`Secret chat`}>
