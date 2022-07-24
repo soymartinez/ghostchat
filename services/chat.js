@@ -1,32 +1,40 @@
 import { Client } from '@twilio/conversations'
 import { getAccessToken } from './user'
 
-export async function createOrJoinConversation({ uniqueName }) {
-    const { token, friendlyName } = await getAccessToken()
+export async function createOrJoinChat(uniqueName) {
+    const { token, identity, friendlyName, image } = await getAccessToken()
     const client = new Client(token)
-    return new Promise(resolve => {
-        client.on('stateChanged', async state => {
-            if (state === 'initialized') {
-                let conversation
-
-                try {
-                    conversation = await client.getConversationByUniqueName(uniqueName)
-                } catch (error) {
-                    if (error.message === 'Forbidden') {
-                        console.log('You are not authorized to access this room 😢')
-                    } else {
-                        conversation = await client.createConversation({
-                            uniqueName,
-                            friendlyName,
-                        })
-
-                        await conversation.join()
-                    }
-                }
-                resolve(conversation)
-            }
+    let chat
+    try {
+        chat = await client.getConversationByUniqueName(uniqueName)
+        await updateParticipantAttributes(chat, identity, image)
+    } catch (error) {
+        chat = await client.createConversation({
+            uniqueName,
+            friendlyName,
         })
+
+        await chat.join()
+        await updateParticipantAttributes(chat, identity, image)
+    } finally {
+        return chat
+    }
+}
+
+export async function joinChat(uniqueName) {
+    const { token, identity, image } = await getAccessToken()
+    const client = new Client(token)
+    const chat = await client.getConversationByUniqueName(uniqueName)
+    await updateParticipantAttributes(chat, identity, image)
+    return chat
+}
+
+export async function updateParticipantAttributes(chat, identity, image) {
+    const participant = await chat.getParticipantByIdentity(identity)
+    const attributes = await participant.updateAttributes({
+        image,
     })
+    return attributes
 }
 
 export async function getSubscribedChats() {
@@ -49,16 +57,6 @@ export async function addParticipant(uniqueName, username) {
     const conversation = await client.getConversationByUniqueName(uniqueName)
     const participant = await conversation.add(username)
     return participant
-}
-
-export async function updateParticipantAttributes(username, image) {
-    const { token } = await getAccessToken()
-    const client = new Client(token)
-    const user = await client.getUser(username)
-    const update = await user.updateAttributes({
-        image,
-    })
-    return update
 }
 
 export async function getChatParticipantsBySid(chatSid) {
