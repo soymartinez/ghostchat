@@ -3,7 +3,8 @@ import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useChat, useUser } from 'context/context'
+import { randomColor } from 'lib/color'
+import { useChat } from 'context/context'
 import { getChatParticipantsByUniqueName } from 'services/chat'
 
 import Signout from './signout'
@@ -20,26 +21,44 @@ export default function Header({ room }) {
     const [hoverAddUser, setHoverAddUser] = useState(false)
     const [hoverClose, setHoverClose] = useState(false)
     const [participants, setParticipants] = useState([])
+    const [countParticipants, setCountParticipants] = useState(0)
     const [addUser, setAddUser] = useState(false)
 
-    const { chat } = useChat()
-    const { user, createUser } = useUser()
+    const { user, chat } = useChat()
 
     useEffect(() => {
-        createUser()
-        getParticipants()
+        getNewParticipants()
     }, [chat])
+    
+    useEffect(() => {
+        getParticipants()
+    }, [])
+
+    const color = randomColor()
+
+    async function getNewParticipants() {
+        if (chat.sid) {
+            chat.on('participantJoined', (participant) => {
+                setCountParticipants(countParticipants + 1)
+                setParticipants([...participants, participant])
+            })
+        }
+    }
 
     async function getParticipants() {
         if (room) {
             try {
-                const listParticipants = await getChatParticipantsByUniqueName(room)
-                setParticipants(listParticipants)
+                const participantsList = await getChatParticipantsByUniqueName(room)
+                setCountParticipants(participantsList.length)
+                const randomParticipants = participantsList.sort(() => Math.random() - 0.5).slice(0, 5)
+                setParticipants(randomParticipants)
+
             } catch (error) {
-                console.log('👥 wait for participants...')
+                console.log('#3 .. 👻 GET PARTICIPANTS')
             }
         }
     }
+
 
     return (
         <div className={`flex items-center z-50
@@ -51,7 +70,7 @@ export default function Header({ room }) {
                         <div className={`${room ? 'visible' : 'hidden'}
                                 flex justify-start items-center
                                 gap-1 bg-[#151617] px-2 py-1 rounded-md  
-                                max-w-[6rem] whitespace-nowrap overflow-ellipsis overflow-hidden
+                                w-14 max-w-[200px] sm:w-min md:w-min whitespace-nowrap overflow-ellipsis overflow-hidden
                                 text-sm text-[#8f939a] lowercase font-semibold`}>
                             <div>
                                 <Hash className={`${room ? 'visible' : 'hidden'}`} />
@@ -62,20 +81,65 @@ export default function Header({ room }) {
                                 flex justify-center items-center h-full
                                 gap-2 bg-[#151617] px-2 py-1 rounded-md
                                 text-sm text-[#8f939a] lowercase font-semibold'>
-                            <Users /> <span>{participants.length}</span>
+                            <Users /> <span>{countParticipants}</span>
                         </div>
                     </div>
                 )
             }
-            {
-                user.image && (
-                    <div className='flex justify-center items-center gap-2 w-full z-10 absolute'>
-                        <Image src={user.image} alt={user.name} className='rounded-full'
-                            placeholder='blur' blurDataURL='#1a1b1c' width={28} height={28} />
-                        <span className={`${room ? 'hidden' : 'visible'} lowercase font-bold`}>{user.username}</span>
-                    </div>
-                )
-            }
+            <div className='flex justify-center items-center gap-2 w-full z-10 absolute -space-x-4'>
+                {
+                    room !== undefined && (
+                        participants.length > 0 ?
+                            participants.map(({ identity, attributes: { image } }) => (
+                                <div key={identity} className={`
+                                        ring-[#0f0f10] ring z-10
+                                        w-[20px] h-[20px] sm:w-[28px] sm:h-[28px] 
+                                        rounded-full transition-all`}>
+                                    {
+                                        image ?
+                                            <Image src={image} alt={identity} className='rounded-full'
+                                                placeholder='blur' blurDataURL='#1a1b1c' width={28} height={28} />
+
+
+                                            : <div key={identity} id='unknown' className={`
+                                                ring-[#0f0f10] ring 
+                                                w-[20px] h-[20px] sm:w-[28px] sm:h-[28px] 
+                                                rounded-full transition-all`}></div>
+                                    }
+                                    <style jsx>{`
+                                        #unknown {
+                                            background-image: linear-gradient(-135deg, #0f0f10 0%, #23b9ee 60%, ${color} 100%);
+                                        }
+                                    `}</style>
+                                </div>
+                            ))
+                            :
+                            <>
+                                <div className='ring-[#0f0f10] ring w-[20px] h-[20px] sm:w-[28px] 
+                                                sm:h-[28px] bg-[#262728] rounded-full animate-pulse'></div>
+                                <div className='ring-[#0f0f10] ring w-[20px] h-[20px] sm:w-[28px] 
+                                                sm:h-[28px] bg-[#262728] rounded-full animate-pulse'></div>
+                            </>
+                    )
+                }
+            </div>
+            <div className='flex justify-center items-center gap-2 w-full z-10 absolute'>
+                {
+                    room === undefined && (
+                        user.image ?
+                            <>
+                                <Image src={user.image} alt={user.name} className='rounded-full'
+                                    placeholder='blur' blurDataURL='#1a1b1c' width={28} height={28} />
+                                <span className={`${room ? 'hidden' : 'visible'} lowercase font-bold`}>{user.username}</span>
+                            </>
+                            :
+                            <>
+                                <div className='w-[28px] h-[28px] bg-[#262728] rounded-full animate-pulse' />
+                                <span className={`w-20 h-4 bg-[#262728] rounded-full animate-pulse`}></span>
+                            </>
+                    )
+                }
+            </div>
             <div className={`flex gap-6 text-sm ${!room ? 'absolute right-0' : 'z-10'}`}>
                 <button onClick={() => setAddUser(!addUser)}
                     onMouseEnter={() => setHoverAddUser(true)}
@@ -127,6 +191,6 @@ export default function Header({ room }) {
                     </div>
                 )
             }
-        </div>
+        </div >
     )
 }
