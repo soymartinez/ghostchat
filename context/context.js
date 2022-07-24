@@ -1,7 +1,8 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { getSession } from 'next-auth/react'
 
-import { createOrJoinConversation, updateParticipantAttributes } from 'services/chat'
+import { joinChat } from 'services/chat'
+import { useRouter } from 'next/router'
 
 const Chat = createContext()
 const User = createContext()
@@ -12,16 +13,27 @@ export const useUser = () => useContext(User)
 export const ChatContext = ({ children }) => {
     const [chat, setChat] = useState([])
     const [user, setUser] = useState([])
+    const { push } = useRouter()
 
-    async function createOrJoinChat(room) {
+    useEffect(() => {
+        initializeUser()
+    }, [])
+    
+    async function initializeUser() {
         try {
-            const chat = await createOrJoinConversation({ uniqueName: room })
-            if (chat) {
-                setChat(chat)
-                return chat
-            }
+            const user = await getSession()
+            setUser(user)
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    async function initializeJoinChat(room) {
+        try {
+            const chat = await joinChat(room)
+            setChat(chat)
+        } catch (error) {
+            push('/')
         }
     }
 
@@ -29,22 +41,9 @@ export const ChatContext = ({ children }) => {
         setChat([])
     }
 
-    async function createUser() {
-        try {
-            const user = await getSession()
-            setUser(user)
-
-            await updateParticipantAttributes(user.username.toLowerCase(), user.image)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     return (
-        <Chat.Provider value={{ chat, createOrJoinChat, resetChat }}>
-            <User.Provider value={{ user, createUser }}>
-                {children}
-            </User.Provider>
+        <Chat.Provider value={{ chat, user, initializeUser, initializeJoinChat, resetChat }}>
+            {children}
         </Chat.Provider>
     )
 }
