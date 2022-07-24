@@ -4,9 +4,9 @@ import Image from "next/image"
 import { useChat } from "context/context"
 import Send from "./send"
 
-export default function ConversationInput({ user }) {
+export default function ConversationInput() {
     const [message, setMessage] = useState('')
-    const { chat } = useChat()
+    const { chat, user } = useChat()
 
     async function handleSendMessageSubmit(e) {
         e.preventDefault()
@@ -28,18 +28,18 @@ export default function ConversationInput({ user }) {
                         user.image ?
                             <Image src={user.image} alt={user.name} className='rounded-full'
                                 placeholder='blur' blurDataURL='#1a1b1c' layout='fixed' width={45} height={45} />
-                            : null
+                            : <div className='w-[45px] h-[45px] bg-[#262728] rounded-full animate-pulse'></div>
                     }
                 </div>
                 <div className={`flex justify-center items-center transition-all
                                 border-2 ${message === 'secret' ? 'border-red-500' : 'border-[#262728]'} 
                                 rounded-xl py-2 pl-4 pr-2 w-full`}>
                     <input type='text' placeholder='Write a message' id='message' autoFocus autoComplete="off"
-                        className={`outline-none transition-all w-full
+                        className={`outline-none transition-all w-full pr-11
                             bg-transparent focus:border-zinc-300
-                            ${message === 'secret' 
-                            ? 'placeholder:text-red-500 focus:border-red-500 border-red-500' 
-                            : 'placeholder:text-[#3e4044] border-zinc-300'}`}
+                            ${message === 'secret'
+                                ? 'placeholder:text-red-500 focus:border-red-500 border-red-500'
+                                : 'placeholder:text-[#3e4044] border-zinc-300'}`}
                         onChange={(e) => setMessage(e.target.value)} />
                     <button
                         type='submit'
