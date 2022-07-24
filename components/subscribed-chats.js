@@ -1,19 +1,22 @@
-import Link from 'next/link';
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { deleteChat, getSubscribedChats } from 'services/chat'
-import Loader from './loader';
+import Loader from './loader'
+import { options } from 'lib/options'
 
 export default function Subscribed() {
     const [chats, setChats] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         subscribedChats()
-    }, [chats]);
+    }, [chats])
 
     async function subscribedChats() {
         await getSubscribedChats()
             .then(setChats)
             .catch(console.error)
+            .finally(() => setLoading(false))
     }
 
     async function deleteSubscribedChat(chatSid) {
@@ -29,30 +32,34 @@ export default function Subscribed() {
             transition-all rounded-2xl'>
             {
                 chats && chats.length > 0 ?
-                    chats.map(chat => (
-                        <div  key={chat.sid}>
-                            <Link href={chat.uniqueName || '/'}>
+                    chats.map(({ sid, uniqueName, createdBy, dateCreated, participants }) => (
+                        <div key={sid}>
+                            <Link href={uniqueName || '/'}>
                                 <a>
-                                    <div className='flex bg-[#242628] transition-all p-4 rounded-2xl cursor-pointer
-                                    hover:shadow-2xl shadow-blue-500 ease-in duration-500 relative'>
+                                    <div className='
+                                        flex gap-2
+                                        bg-[#242628] transition-all p-4 rounded-2xl
+                                        cursor-pointer hover:shadow-lg shadow-blue-500 relative'>
+                                        <div className='bg-gradient-to-br from-violet-500 w-10 h-10 rounded-full'></div>
                                         <div className=''>
-                                            <h1 className='text-md text-blue-500 font-bold'>{chat.uniqueName}</h1>
-                                            <h1 className='text-md font-bold'>{chat.createdBy}</h1>
+                                            <h1 className='text-md text-blue-500 font-bold'>
+                                                {uniqueName}
+                                            </h1>
+                                            <h1 className='text-sm font-bold'>{createdBy}</h1>
+                                            <span className='text-sm'>{dateCreated.toLocaleString('en-US', options)}</span>
                                         </div>
                                     </div>
                                 </a>
                             </Link>
-                            {/* <div className='w-min'>
-                                <button onClick={() => deleteSubscribedChat(chat.sid)}
-                                    className='px-2 rounded-full bg-[#151617] hover:bg-[#333638]'>
-                                    Delete
-                                </button>
-                            </div> */}
                         </div>
                     ))
                     :
                     <div className='absolute grid place-content-center w-full h-full'>
-                        <Loader size={35} />
+                        {
+                            loading
+                                ? <Loader size={35} />
+                                : <h1 className='text-center text-blue-500'>No chats</h1>
+                        }
                     </div>
             }
         </div >
