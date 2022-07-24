@@ -12,7 +12,7 @@ export default function Signin({ providers }) {
                 <div className='flex flex-auto flex-col'>
                     <div className='text-center mb-10'>
                         <h1 className='text-white text-[32px] font-extrabold'>
-                            Log in to Secret Chat
+                            Log in to Ghostchat
                         </h1>
                     </div>
                     <div className='w-full max-w-xs self-center'>
