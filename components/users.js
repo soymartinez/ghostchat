@@ -1,8 +1,8 @@
-export default function Users({ active }) {
+export default function Users({ active, index }) {
     return (
         <svg
-            width="18px"
-            height="18px"
+            width={`${index ? '20px' : '18px'}`}
+            height={`${index ? '20px' : '18px'}`}
             fill={`${active ? '#fff' : '#8f939a'}`}
             viewBox="0 0 256 256"
             id="Flat"
