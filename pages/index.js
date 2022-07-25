@@ -18,8 +18,8 @@ export default function Home() {
 
   return (
     <Layout page={`Ghostchat`}>
-      <div className='flex justify-center items-center h-5/6'>
-        <div className='flex flex-col justify-center items-center w-full duration-500
+      <div className='flex justify-center items-center h-full transition-all rounded-2xl overflow-hidden'>
+        <div className='flex flex-col justify-center items-center pb-4 pt-16 w-full h-full duration-500 transition-all
           opacity-0 relative' id='main'>
           <Header />
           <Form />
