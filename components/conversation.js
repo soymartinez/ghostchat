@@ -16,8 +16,11 @@ export default function Conversation() {
   useEffect(() => {
     scrollToBottom()
     getNewMessages()
+    if (!loading) {
+      const chatBox = document.getElementById('chatBox')
+      chatBox.style.opacity = 1
+    }
   }, [messages])
-
 
   function scrollToBottom() {
     const chatBox = document.getElementById('chatBox')
@@ -46,13 +49,13 @@ export default function Conversation() {
 
   return (
     <div className='w-full rounded-md h-screen overflow-auto
-        scrollbar-thin scrollbar-thumb-blue-500' id='chatBox'>
+        scrollbar-thin scrollbar-thumb-blue-500 transition-all ease-in opacity-0' id='chatBox'>
       {
         messages.length > 0 ?
           messages.map(({ author, body, attributes: { image }, dateCreated, index }) => (
             <div key={index}
               className={`${body.length < 3 ? 'w-min' : ''}
-                    flex gap-4
+                    flex gap-4 
                     first:mt-0 last:mb-0 my-2 p-3
                     bg-[#1a1b1c] rounded-xl`}>
               <div className='flex'>
